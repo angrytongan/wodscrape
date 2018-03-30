@@ -1,0 +1,50 @@
+img, iframe {
+    display: none;
+}
+.chunk {
+    padding: 1em;
+    margin-bottom: 1em;
+    background-color: #eee;
+}
+.chunk ul {
+    margin: 0;
+}
+.chunk ul li {
+    display: inline-block;
+    padding-right: 1em;
+}
+#shortcuts, .hidden {
+    display: none;
+}
+#workouts {
+    column-count: 1;
+    column-gap: 1em;
+}
+.workout {
+    background-color: #eee;
+    display: inline-block;
+    width: 100%;
+    margin-bottom: 1em;
+    padding: 0;
+}
+.remove-me {
+    float: right;
+    clear: both;
+}
+#source {
+/*    width: 25em;*/
+}
+.toggle-site-info {
+    float: right;
+}
+
+@media only screen and (min-width: 400px) {
+    #workouts {
+        column-count: 2;
+    }
+}
+@media only screen and (min-width: 700px) {
+    #workouts {
+        column-count: 3;
+    }
+}
