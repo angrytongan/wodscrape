@@ -10,31 +10,54 @@ div.workout .cui-icon,
     float: right;
 }
 
-.masonry {
-    column-count: 1;
-}
 .workout {
     display: inline-block;
     width: 100%;
 }
 
-/* Masonry on large screens */
-@media only screen and (min-width: 1024px) {
-  .masonry {
-    column-count: 4;
-  }
+[data-theme="light"] {
+    --body-background-color: #eceff1;
+    --body-color: #37474f;
+
+    --cui-card-background-color: #fff;
+    --cui-card-color: #37474f;
+
+    --a-color: #1565c0;
+    --headers: #37474f;
 }
 
-/* Masonry on medium-sized screens */
-@media only screen and (max-width: 1023px) and (min-width: 768px) {
-  .masonry {
-    column-count: 3;
-  }
+[data-theme="dark"] {
+    --body-background-color: #37474f;
+    --body-color: #eceff1;
+
+    --cui-card-background-color: #37474f;
+    --cui-card-color: #fff;
+    --cui-h: #fff;
+
+    --a-color: #ccc;
+    --headers: #fff;
 }
 
-/* Masonry on small screens */
-@media only screen and (max-width: 767px) and (min-width: 540px) {
-  .masonry {
-    column-count: 2;
-  }
+body,
+.cui-drawer-content {
+    background-color: var(--body-background-color);
+    color: var(--body-color);
+}
+
+a, a:hover {
+    color: var(--a-color);
+}
+
+.cui-control {
+    color: var(--body-color);
+}
+
+.cui-card {
+    background-color: var(--cui-card-background-color);
+    color: var(--cui-card-color);
+}
+
+.cui-h1, .cui-h2, .cui-h3, .cui-h4, .cui-h5, .cui-h6, 
+h1, h2, h3, h4, h5, h6 {
+    color: var(--headers);
 }

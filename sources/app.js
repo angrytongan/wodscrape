@@ -11,22 +11,9 @@ const {
     Icon,
     ResponsiveManager,
     Select,
+    Switch,
 
 } = CUI;
-//FocusManager.showFocusOnlyOnTab();
-ResponsiveManager.initialize();
-
-const ResponsiveManagerHandler = {
-    view: () => {
-        return m('p', [
-            ResponsiveManager.is('xs') && 'XS',
-            ResponsiveManager.is('sm') && 'SM',
-            ResponsiveManager.is('md') && 'MD',
-            ResponsiveManager.is('lg') && 'LG',
-            ResponsiveManager.is('xl') && 'XL'
-        ]);
-    }
-};
 
 /*
  * Blurgh.
@@ -57,6 +44,40 @@ const faq = [
     },
 ];
 
+const AppModel = () => {
+    let options = {
+        darkMode: false,
+    };
+
+    const saveOptions = () => {
+        localStorage.setItem('options', JSON.stringify(options));
+    };
+
+    const setMode = () => {
+        document.documentElement.setAttribute('data-theme', options.darkMode ? 'dark' : 'light');
+    };
+
+    return {
+        init: () => {
+            let o = localStorage.getItem('options');
+            if (o === null) {
+                saveOptions();
+            } else {
+                options = JSON.parse(o);
+            }
+
+            setMode();
+        },
+
+        mode: () => options.darkMode,
+        toggleMode: () => {
+            options.darkMode = !options.darkMode;
+            saveOptions();
+            setMode();
+        }
+    };
+};
+const appModel = AppModel();
 
 /*
  */
@@ -67,7 +88,7 @@ const SourcesModel = () => {
     ];
 
     return {
-        getSources: () => sources,
+        sources: () => sources,
     };
 };
 const sourcesModel = SourcesModel();
@@ -134,28 +155,26 @@ const ResultsModel = () => {
     };
 };
 const resultsModel = ResultsModel();
-const Results = () => {
-    return {
-        oninit: () => {
-        },
+const Results = {
+    oninit: () => {
+    },
 
-        view: () => {
-            return m('.masonry', resultsModel.getResults().map((r, i) => {
-                return m('div.workout', [
-                    m(Card, {
-                        fluid: true
-                    }, [
-                        m(Icon, {
-                            name: 'x',
-                            intent: 'negative',
-                            onclick: (e) => { resultsModel.removeResult(i); },
-                        }),
-                        m.trust(r.result)
-                    ]),
-                ]);
-            }));
-        },
-    };
+    view: () => {
+        return m(Grid, resultsModel.getResults().map((r, i) => {
+            return m(Col, {
+                span: { xs: 12, sm: 6, lg: 4 },
+            }, m(Card, {
+                class: 'workout',
+                fluid: true,
+            }, [
+                m(Icon, {
+                    name: 'x',
+                    intent: 'negative',
+                    onclick: (e) => { resultsModel.removeResult(i); },
+                }), m.trust(r.result)
+            ]));
+        }));
+    },
 };
 
 const Controls = () => {
@@ -164,7 +183,7 @@ const Controls = () => {
 
     return {
         oninit: () => {
-            source = sourcesModel.getSources()[0];
+            source = sourcesModel.sources()[0];
             resultsModel.fetchFromCookie();
         },
         view: () => {
@@ -194,7 +213,7 @@ const Controls = () => {
                 m(ControlGroup, [
                     m(Select, {
                         fluid: true,
-                        options: sourcesModel.getSources(),
+                        options: sourcesModel.sources(),
                         value: source,
                         onchange: (e) => {
                             source = e.currentTarget.value;
@@ -210,13 +229,22 @@ const Controls = () => {
                         intent: 'default',
                         onclick: (e) => { isOpen = !isOpen },
                     }),
-                ])
+                    m(Switch, {
+                        label: 'Dark mode',
+                        checked: appModel.mode(),
+                        onchange: () => { appModel.toggleMode(); },
+                    }),
+                ]),
             ]);
         },
     };
 };
 
 const Main = {
+    oninit: () => {
+        appModel.init();
+    },
+
     view: () => {
         return m(Grid, [
             m(Col, { span: 12 }, m(Controls)),
@@ -227,6 +255,9 @@ const Main = {
 
 document.addEventListener('DOMContentLoaded', () => {
     const root = document.body;
+
+    FocusManager.showFocusOnlyOnTab();
+    ResponsiveManager.initialize();
 
     m.route(root, '/', {
         '/': Main,
