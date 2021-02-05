@@ -2,8 +2,6 @@
 
 Set of scripts that create a single page website consisting of multiple different WODs (Workout Of the Day) from a number of different public sites.
 
-See [wodscrape.com.au](http://www.wodscrape.com.au) for the production site.
-
 ## How it works
 
 * `index.html` is created from a template + all sources that are available in `sources/`.
